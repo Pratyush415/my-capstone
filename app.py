@@ -18,15 +18,16 @@ def predict():
     try:
         weight = float(data['weight'])
         height = float(data['height'])
-        # bmi = weight / (height/100)**2 
+        
         if model:
-            # Assuming model takes [weight, height]
+            # Standardize the output key to 'result'
             prediction = model.predict(np.array([[weight, height]]))[0]
-            return jsonify({'bmi_category': prediction})
+            return jsonify({'result': f"{prediction:.2f} (Predicted)"})
         else:
-            # Fallback logic if model.pkl isn't uploaded yet
+            # Fallback logic using the standard key 'result'
             bmi = round(weight / (height/100)**2, 2)
-            return jsonify({'bmi': bmi, 'note': 'Model file not found, using formula.'})
+            return jsonify({'result': f"{bmi} (Calculated)", 'note': 'Model file not found'})
+            
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 

@@ -23,7 +23,7 @@ def predict():
         
         if model:
             # 2. CREATE DATAFRAME: This fixes the "Feature Names" error in your logs
-            features = pd.DataFrame([[weight, height]], columns=['Weight', 'Height'])
+            features = pd.DataFrame([[weight, height]], columns=['weight', 'height'])
             
             # 3. Predict using the model
             prediction = model.predict(features)[0]

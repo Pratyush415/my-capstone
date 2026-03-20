@@ -17,29 +17,30 @@ def home():
 def predict():
     data = request.get_json()
     try:
+        # 1. Get data from the frontend
         weight = float(data['weight'])
         height = float(data['height'])
         
         if model:
-            # Create a DataFrame with the exact column names used during training
-            # Note: Ensure 'Weight' and 'Height' match your training script exactly
+            # 2. CREATE DATAFRAME: This fixes the "Feature Names" error in your logs
             features = pd.DataFrame([[weight, height]], columns=['Weight', 'Height'])
             
+            # 3. Predict using the model
             prediction = model.predict(features)[0]
             
-            # If your model returns an array, extract the first value
+            # Extract value if it's a numpy array
             if isinstance(prediction, np.ndarray):
                 prediction = prediction[0]
                 
             return jsonify({'result': f"{prediction:.2f} (Predicted)"})
         else:
-            # Fallback logic if model.pkl is missing
+            # Fallback if model.pkl fails to load
             bmi = round(weight / (height / 100) ** 2, 2)
             return jsonify({
                 'result': f"{bmi} (Calculated)", 
-                'note': 'Model file not found, using standard BMI formula'
+                'note': 'Model not loaded, using formula'
             })
             
     except Exception as e:
-        # This will help you see the exact error in the browser console if it fails
+        # This sends the error message back to your browser console for debugging
         return jsonify({'error': str(e)}), 400
